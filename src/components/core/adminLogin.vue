@@ -1,7 +1,7 @@
 <template>
     <div class="login-container">
         <div class="title">
-            用户登录
+            管理员登录
         </div>
         <div class="input-container">
 
@@ -37,6 +37,7 @@ const store = useUserStore()
 const router = useRouter()
 const ruleFormRef = ref<FormInstance>()
 
+let pass: boolean = true
 let user: User = reactive({
     name: '',
     password: '',
@@ -56,7 +57,7 @@ const checkNumber = (rule: any, value: any, callback: any) => {
                 number: '',
                 authority:3
             }
-            if (user.number) {
+            if (user.number && user.authority == 1) {
                 callback()
             } else {
                 callback('没有该账号')
@@ -70,7 +71,7 @@ const validatePass = (rule: any, value: any, callback: any) => {
         callback(new Error('请输入密码'))
     } else {
         setTimeout(() => {
-        if(user.password === value){
+        if(user.password === value && user.authority == 1){
             callback()
         }else{
             callback(new Error('密码输入错误'))
@@ -103,12 +104,13 @@ const rules = reactive<FormRules>({
 
 
 const submitForm = (formEl: FormInstance | undefined) => {
+    console.log(user)
     if (!formEl) return
     formEl.validate((valid) => {
         if (valid) {
             console.log("登录成功")
-            store.user = user
-            router.push('/index')
+            store.admin = user
+            router.push('/admin')
         } else {
             console.log('登陆失败')
             return false

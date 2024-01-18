@@ -1,5 +1,6 @@
 <template>
 <div>内容</div>
+<router-view></router-view>
 </template>
 
 <script setup lang='ts'>
