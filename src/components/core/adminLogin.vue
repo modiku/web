@@ -57,7 +57,7 @@ const checkNumber = (rule: any, value: any, callback: any) => {
                 number: '',
                 authority:3
             }
-            if (user.number && user.authority == 1) {
+            if (user.number && user.authority <= 1) {
                 callback()
             } else {
                 callback('没有该账号')
@@ -71,7 +71,7 @@ const validatePass = (rule: any, value: any, callback: any) => {
         callback(new Error('请输入密码'))
     } else {
         setTimeout(() => {
-        if(user.password === value && user.authority == 1){
+        if(user.password === value && user.authority <= 1){
             callback()
         }else{
             callback(new Error('密码输入错误'))
@@ -80,15 +80,7 @@ const validatePass = (rule: any, value: any, callback: any) => {
     }
 }
 
-// const validatePass2 = (rule: any, value: any, callback: any) => {
-//     if (value === '') {
-//         callback(new Error('Please input the password again'))
-//     } else if (value !== ruleForm.pass) {
-//         callback(new Error("Two inputs don't match!"))
-//     } else {
-//         callback()
-//     }
-//  }
+
 
 const ruleForm = reactive({
     number: '',
@@ -98,7 +90,6 @@ const ruleForm = reactive({
 
 const rules = reactive<FormRules>({
     pass: [{ validator: validatePass, trigger: 'blur' }],
-    // checkPass: [{ validator: validatePass2, trigger: 'blur' }],
     number: [{ validator: checkNumber, trigger: 'blur' }],
 })
 
@@ -146,35 +137,6 @@ const resetForm = (formEl: FormInstance | undefined) => {
         margin-top: 30px;
 
 
-        // .input-area {
-        //     margin-left: 20px;
-        //     width: 400px;
-        // }
-
-        // .number-area {
-        //     margin: auto;
-        //     margin-top: 10px;
-        //     width: 550px;
-        //     display: flex;
-        //     line-height: 50px;
-
-
-        // }
-
-        // .password-area {
-        //     margin: auto;
-        //     width: 550px;
-        //     display: flex;
-        //     line-height: 50px;
-
-
-        // }
-
-        // .button-area {
-        //     width: 80px;
-        //     margin: auto;
-        //     margin-top: 10px;
-        // }
     }
 }
 </style>

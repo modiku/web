@@ -3,7 +3,7 @@
         <div class="header-area">
             <div v-if="!user.name" class="log-area">
                 <a href="/login">登录</a>
-                <a href="">注册</a>
+                <a href="/register">注册</a>
             </div>
 
             <div v-if="user.name" class="log-area">
