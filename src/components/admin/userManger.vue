@@ -4,8 +4,10 @@
             <el-table-column fixed prop="number" label="账号" width="150" />
             <el-table-column prop="name" label="用户名" width="120" />
             <el-table-column prop="myAuthority" label="权限" width="120" />
-            <el-table-column prop="date" label="创建日期" width="800" />
+            <el-table-column prop="userAvaterUrl" label="头像地址" width="250" />
+            <el-table-column prop="date" label="创建日期" width="250" />
             <el-table-column fixed="right" label="操作" width="160">
+
                 <template #default="scope">
                     <el-button link type="primary" size="small" @click="changedialogDetailVisible(scope.row)">详细</el-button>
                     <el-button link type="primary" size="small" @click="changedialogEidtVisible(scope.row)">编辑</el-button>
@@ -32,6 +34,14 @@
 
             <el-form-item label="创建日期" :label-width="formLabelWidth">
                 {{ form.date }}
+            </el-form-item>
+
+            <el-form-item label="用户头像" :label-width="formLabelWidth">
+                <img :src="form.userAvaterUrl" class="avatar" />
+            </el-form-item>
+
+            <el-form-item label="描述" :label-width="formLabelWidth">
+                {{ form.description }}
             </el-form-item>
         </el-form>
         <template #footer>
@@ -63,6 +73,21 @@
             <el-form-item label="创建日期" :label-width="formLabelWidth">
                 {{ EditForm.date }}
             </el-form-item>
+
+            <el-form-item label="用户头像" :label-width="formLabelWidth">
+                <el-upload class="avatar-uploader" action="/api/upload/img" method="POST" :show-file-list="false"
+                    :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
+                    <img v-if="EditForm.userAvaterUrl" :src="EditForm.userAvaterUrl" class="avatar" />
+                    <el-icon v-else class="avatar-uploader-icon">
+                        <Plus />
+                    </el-icon>
+                </el-upload>
+            </el-form-item>
+
+            <el-form-item label="描述" :label-width="formLabelWidth">
+                <el-input v-model="EditForm.description" :autosize="{ minRows: 3, maxRows: 5 }" type="textarea"
+                    placeholder="请描述一下" />
+            </el-form-item>
         </el-form>
         <template #footer>
             <span class="dialog-footer">
@@ -91,9 +116,10 @@
 <script setup lang='ts'>
 import { delUser, getAllUser, updateUser } from '@/api';
 import { useUserStore } from '@/stores/user';
-import { ElMessage } from 'element-plus';
+import { ElMessage, type UploadProps } from 'element-plus';
 import { reactive, ref } from 'vue';
-
+import { Plus } from '@element-plus/icons-vue';
+import avater from '@/components/admin/avater.vue'
 const store = useUserStore()
 let userList = ref<myUser[]>([])
 let delNumber = ref<number>()
@@ -115,11 +141,14 @@ const dialogDetailVisible = ref(false)
 const dialogDelVisible = ref(false)
 const formLabelWidth = '140px'
 
+
 const form = reactive({
     name: '',
     number: '',
     date: '',
-    myAuthority: ''
+    myAuthority: '',
+    userAvaterUrl: '',
+    description: ''
 })
 
 const EditForm = reactive({
@@ -127,7 +156,9 @@ const EditForm = reactive({
     number: '',
     date: '',
     myAuthority: '',
-    authority: 3
+    authority: 3,
+    userAvaterUrl: '',
+    description: ''
 })
 
 const changedialogDetailVisible = (row: any) => {
@@ -136,6 +167,9 @@ const changedialogDetailVisible = (row: any) => {
     form.number = row.number ?? ""
     form.date = row.date ?? ""
     form.myAuthority = row.myAuthority ?? ""
+    form.userAvaterUrl = row.userAvaterUrl ?? ""
+    form.description = row.description ?? ""
+
 }
 
 const changedialogEidtVisible = (row: any) => {
@@ -144,6 +178,36 @@ const changedialogEidtVisible = (row: any) => {
     EditForm.number = row.number ?? ""
     EditForm.date = row.date ?? ""
     EditForm.myAuthority = row.myAuthority ?? ""
+    EditForm.userAvaterUrl = row.userAvaterUrl ?? ""
+    EditForm.description = row.description ?? ""
+
+}
+
+
+// const changeAvaterUrl = (url: string) => {
+//     EditForm.userAvaterUrl = url
+//     // console.log(url)
+// }
+
+const handleAvatarSuccess: UploadProps['onSuccess'] = (
+    response,
+    uploadFile
+) => {
+
+    // console.log(response)
+    // imageUrl.value = URL.createObjectURL(uploadFile.raw!)
+    EditForm.userAvaterUrl = `http://localhost:3000/static/userAvater/${response.data.message ?? ''}`
+}
+
+const beforeAvatarUpload: UploadProps['beforeUpload'] = (rawFile) => {
+    if (rawFile.type !== 'image/jpeg') {
+        ElMessage.error('Avatar picture must be JPG format!')
+        return false
+    } else if (rawFile.size / 1024 / 1024 > 2) {
+        ElMessage.error('Avatar picture size can not exceed 2MB!')
+        return false
+    }
+    return true
 }
 
 
@@ -151,13 +215,15 @@ const changedialogEidtVisible = (row: any) => {
 const submitForm = async () => {
     let myUser: User = userList.value.find(user => user.number == EditForm.number) as User
     myUser.name = EditForm.name
+    myUser.userAvaterUrl = EditForm.userAvaterUrl
+    myUser.description = EditForm.description
     const auNum = Authority.findIndex(tmp => tmp === EditForm.myAuthority)
     if (auNum < 0) {
         return ElMessage.error('修改失败')
     } else {
         if (store.admin.authority > 0) {
             if (auNum <= 1) {
-                ElMessage.error('你不是root不能给予管理员权限')
+                ElMessage.error('你不是root不能修改管理员资料')
                 return
             } else {
                 if (myUser.authority <= 1) {
@@ -167,7 +233,7 @@ const submitForm = async () => {
                 myUser.authority = auNum
             }
         } else {
-            if(myUser.authority === 0){
+            if (myUser.authority === 0) {
                 ElMessage.error('不能修改root的权限')
                 return
             }
@@ -208,13 +274,42 @@ const goDel = (row: any) => {
     dialogDelVisible.value = true
     delNumber.value = row.number
 }
-const handleClick = () => {
-    console.log('click')
-}
+
 
 
 
 </script>
 
 
-<style lang='less'></style>
+
+
+<style lang='less'>
+.avatar {
+    max-width: 178px;
+    max-height: 178px;
+    min-width: 50px;
+    min-height: 50px;
+    display: block;
+}
+
+.avatar-uploader .el-upload {
+    border: 1px dashed var(--el-border-color);
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: var(--el-transition-duration-fast);
+}
+
+.avatar-uploader .el-upload:hover {
+    border-color: var(--el-color-primary);
+}
+
+.el-icon.avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 178px;
+    height: 178px;
+    text-align: center;
+}
+</style>
