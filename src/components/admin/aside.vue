@@ -4,46 +4,34 @@
             <el-sub-menu index="1">
                 <template #title>
                     <el-icon>
-                        <message />
-                    </el-icon>用户管理
+                        <UserFilled />
+                    </el-icon>用户
                 </template>
                 <el-menu-item-group>
-                    <el-menu-item index="/userManger" >用户管理</el-menu-item>
+                    <el-menu-item index="/userManger">用户管理</el-menu-item>
                 </el-menu-item-group>
+
             </el-sub-menu>
             <el-sub-menu index="2">
                 <template #title>
-                    <el-icon><icon-menu /></el-icon>Navigator Two
+                    <el-icon>
+                        <Goods />
+                    </el-icon>商品
                 </template>
                 <el-menu-item-group>
-                    <el-menu-item index="/productManger" >商品管理</el-menu-item>
+                    <el-menu-item index="/productManger">商品管理</el-menu-item>
                 </el-menu-item-group>
-                <el-menu-item-group title="Group 2">
-                    <el-menu-item index="2-3">Option 3</el-menu-item>
-                </el-menu-item-group>
-                <el-sub-menu index="2-4">
-                    <template #title>Option 4</template>
-                    <el-menu-item index="2-4-1">Option 4-1</el-menu-item>
-                </el-sub-menu>
             </el-sub-menu>
+
             <el-sub-menu index="3">
                 <template #title>
                     <el-icon>
-                        <setting />
-                    </el-icon>Navigator Three
+                        <Tickets />
+                    </el-icon>订单
                 </template>
                 <el-menu-item-group>
-                    <template #title>Group 1</template>
-                    <el-menu-item index="3-1">Option 1</el-menu-item>
-                    <el-menu-item index="3-2">Option 2</el-menu-item>
+                    <el-menu-item index="/orderManger">订单管理</el-menu-item>
                 </el-menu-item-group>
-                <el-menu-item-group title="Group 2">
-                    <el-menu-item index="3-3">Option 3</el-menu-item>
-                </el-menu-item-group>
-                <el-sub-menu index="3-4">
-                    <template #title>Option 4</template>
-                    <el-menu-item index="3-4-1">Option 4-1</el-menu-item>
-                </el-sub-menu>
             </el-sub-menu>
         </el-menu>
     </el-scrollbar>
@@ -51,7 +39,7 @@
 
 
 <script setup lang='ts'>
-import { Menu as IconMenu, Message, Setting } from '@element-plus/icons-vue'
+import { Menu as UserFilled, Goods, Tickets } from '@element-plus/icons-vue'
 
 
 </script>

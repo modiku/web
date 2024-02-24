@@ -12,7 +12,7 @@
                 </el-dropdown-menu>
             </template>
         </el-dropdown>
-        <span>{{ store.admin.name }}</span>
+        <span>{{ store.name }}</span>
     </div>
 </template>
 
@@ -23,7 +23,7 @@ import { Menu as IconMenu, Message, Setting } from '@element-plus/icons-vue'
 
 const store = useUserStore()
 
-
+console.log(Number(localStorage.getItem('authority')))
 </script>
 
 

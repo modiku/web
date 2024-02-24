@@ -16,7 +16,7 @@
                 <el-form-item>
                     <el-button type="primary" @click="submitForm(ruleFormRef)">登录</el-button>
                     <el-button @click="resetForm(ruleFormRef)">重置</el-button>
-                    <el-button type="info" @click="">去注册</el-button>
+                    <el-button type="info" @click="toRegist">去注册</el-button>
                 </el-form-item>
             </el-form>
 
@@ -37,14 +37,25 @@ import { storeToRefs } from 'pinia';
 const store = useUserStore()
 const router = useRouter()
 const ruleFormRef = ref<FormInstance>()
-
-let user: User = reactive({
-    name: '',
-    password: '',
-    number: '',
-    authority:3
+const toRegist = () => {
+    router.push('/register')
     
+}
+
+let user: myUser = reactive({
+    number: '',
+    password: '',
+    name: '',
+    authority: 3,
+    userAvaterUrl: "",
+    description: '',
+    orders: []
+
 })
+
+
+
+
 const checkNumber = (rule: any, value: any, callback: any) => {
     if (!value) {
         return callback(new Error('请输入账号'))
@@ -53,10 +64,13 @@ const checkNumber = (rule: any, value: any, callback: any) => {
         if (value) {
             const data = await getUser(ruleForm.number)
             user = data.data[0] as User ?? {
-                name: '',
-                password: '',
                 number: '',
-                authority:3
+                password: '',
+                name: '',
+                authority: 3,
+                userAvaterUrl: '',
+                description: '',
+                orders: []
             }
             if (user.number) {
                 callback()
@@ -72,12 +86,12 @@ const validatePass = (rule: any, value: any, callback: any) => {
         callback(new Error('请输入密码'))
     } else {
         setTimeout(() => {
-        if(user.password === value){
-            callback()
-        }else{
-            callback(new Error('密码输入错误'))
-        }
-    }, 1000)
+            if (user.password === value) {
+                callback()
+            } else {
+                callback(new Error('密码输入错误'))
+            }
+        }, 1000)
     }
 }
 
@@ -109,8 +123,20 @@ const submitForm = (formEl: FormInstance | undefined) => {
     formEl.validate((valid) => {
         if (valid) {
             console.log("登录成功")
-            store.user = user
+            store.name = user.name
+            store.number = user.number
+            store.authority = user.authority
+            store.userAvaterUrl = user.userAvaterUrl
+            store.orders = user.orders
+            store.description = user.description
+            store.password = user.password
+            localStorage.clear()
+            localStorage.setItem('authority',store.authority+'')
+            localStorage.setItem('userId',store.number)
             router.push('/index')
+            // localStorage.setItem('userName',store.name)
+           
+
         } else {
             console.log('登陆失败')
             return false

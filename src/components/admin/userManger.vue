@@ -75,7 +75,7 @@
             </el-form-item>
 
             <el-form-item label="用户头像" :label-width="formLabelWidth">
-                <el-upload class="avatar-uploader" action="/api/upload/img" method="POST" :show-file-list="false"
+                <el-upload class="avatar-uploader" action="/api/upload/user/img" method="POST" :show-file-list="false"
                     :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
                     <img v-if="EditForm.userAvaterUrl" :src="EditForm.userAvaterUrl" class="avatar" />
                     <el-icon v-else class="avatar-uploader-icon">
@@ -119,7 +119,6 @@ import { useUserStore } from '@/stores/user';
 import { ElMessage, type UploadProps } from 'element-plus';
 import { reactive, ref } from 'vue';
 import { Plus } from '@element-plus/icons-vue';
-import avater from '@/components/admin/avater.vue'
 const store = useUserStore()
 let userList = ref<myUser[]>([])
 let delNumber = ref<number>()
@@ -221,7 +220,7 @@ const submitForm = async () => {
     if (auNum < 0) {
         return ElMessage.error('修改失败')
     } else {
-        if (store.admin.authority > 0) {
+        if (store.authority > 0) {
             if (auNum <= 1) {
                 ElMessage.error('你不是root不能修改管理员资料')
                 return
@@ -233,7 +232,7 @@ const submitForm = async () => {
                 myUser.authority = auNum
             }
         } else {
-            if (myUser.authority === 0) {
+            if (myUser.authority != 0) {
                 ElMessage.error('不能修改root的权限')
                 return
             }

@@ -1,19 +1,22 @@
 <template>
-    <el-container class="layout-container-demo" style="height: 500px">
-        <el-aside width="200px">
-           <asideVue></asideVue>
-        </el-aside>
+    <div class="admin-container">
+        <el-container class="layout-container-demo" style="height: 500px">
+            <el-aside width="200px">
+                <asideVue></asideVue>
+            </el-aside>
 
-        <el-container>
-            <el-header style="text-align: right; font-size: 12px">
-                <headerVue></headerVue>
-            </el-header>
+            <el-container>
+                <el-header style="text-align: right; font-size: 12px">
+                    <headerVue></headerVue>
+                </el-header>
 
-            <el-main>
-                <router-view></router-view>
-            </el-main>
+                <el-main>
+                    <router-view></router-view>
+                </el-main>
+            </el-container>
         </el-container>
-    </el-container>
+
+    </div>
 </template>
   
 <script lang="ts" setup>
@@ -26,6 +29,9 @@ import headerVue from "@/components/admin/header.vue"
 </script>
   
 <style scoped lang="less">
+.admin-container{
+    margin-top: 30px;
+}
 .layout-container-demo .el-header {
     position: relative;
     background-color: var(--el-color-primary-light-7);
@@ -40,7 +46,5 @@ import headerVue from "@/components/admin/header.vue"
 .layout-container-demo .el-main {
     padding: 0;
 }
-
-
 </style>
   
